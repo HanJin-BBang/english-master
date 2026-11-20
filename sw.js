@@ -1,5 +1,5 @@
 /* 네트워크 먼저: 인터넷이 되면 항상 최신 파일, 안 되면 저장해 둔 파일로 실행 */
-const CACHE='english-master-v8';
+const CACHE='english-master-v9';
 const ASSETS=['./','./index.html','./talk.js','./course-en.js','./manifest.webmanifest','./icon.svg'];
 self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
