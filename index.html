@@ -1,2 +1,90 @@
-<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#183153"><link rel="manifest" href="./manifest.webmanifest"><title>영어 마스터</title><style>
-*{box-sizing:border-box}body{margin:0;background:#f3f6fb;color:#1b2d47;font-family:system-ui,-apple-system,sans-serif}header{background:#183153;color:white;padding:24px max(18px,calc((100% - 980px)/2))}header h1{margin:0;font-size:27px}header p{margin:6px 0 0;color:#dbeafe}main{max-width:980px;margin:auto;padding:18px}.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0}.tabs button{padding:12px 4px}button{border:0;border-radius:12px;background:#e1e9f3;color:#183153;font-weight:750;padding:12px 16px;cursor:pointer}.active,.primary{background:#2563eb!important;color:white!important}.card{background:white;border-radius:18px;padding:20px;box-shadow:0 4px 20px #102f5410;margin:12px 0}.eyebrow{font-size:13px;color:#64748b;font-weight:700}.english{font-size:clamp(24px,5vw,38px);font-weight:750;line-height:1.35;margin:16px 0}.korean{font-size:18px;color:#475569;margin:8px 0 20px}.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.row button{flex:1}input{width:100%;font:inherit;padding:13px;border:1px solid #cbd5e1;border-radius:12px;margin:10px 0}#result{min-height:24px;font-weight:700}.muted{color:#64748b;font-size:14px}#tip{white-space:pre-line;line-height:1.85}.progress{height:9px;background:#e2e8f0;border-radius:9px;overflow:hidden}.fill{height:100%;background:#2563eb;width:0}#list{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:9px}.tile{text-align:left;min-height:70px}footer{text-align:center;color:#64748b;font-size:12px;padding:25px}@media(max-width:430px){.tabs{gap:4px}.tabs button{font-size:12px;padding:12px 2px}.card{padding:16px}.row button{min-width:42%}} .practice-target{background:#eff6ff;border:1px solid #bfdbfe;border-radius:14px;padding:14px 16px;display:grid;gap:8px;margin:12px 0}.practice-target strong{font-size:20px;line-height:1.5}#answer{font-size:16px;min-height:48px}#practiceHelp{line-height:1.6}.lesson-nav{position:relative}.lesson-nav button{min-height:48px}button{touch-action:manipulation;min-height:44px}@media(max-width:720px){header{padding:15px 16px}header h1{font-size:21px}header p{font-size:12px}main{padding:10px 12px 24px}.tabs{position:sticky;top:0;z-index:5;background:#f3f6fb;padding:6px 0;margin:2px 0 6px;gap:5px}.tabs button{font-size:13px;min-height:44px;padding:9px 2px}.card{padding:15px;margin:9px 0;border-radius:14px}.english{font-size:clamp(25px,7vw,34px);overflow-wrap:anywhere}.korean{font-size:16px;margin-bottom:12px}.row{gap:6px}.row button{padding:11px 8px;font-size:13px;flex:1 1 30%}header .row button{flex:1 1 30%;font-size:12px;padding:9px 4px}#list{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}.tile{font-size:13px;min-height:60px;overflow-wrap:anywhere}.practice-target strong{font-size:18px}input{margin:8px 0}.lesson-nav{display:grid;grid-template-columns:1fr 1fr}}@media(max-width:350px){.row button{flex-basis:45%}.tabs button{font-size:12px}} .qr-install{margin-top:14px;border:1px solid #ffffff50;border-radius:14px;padding:12px 14px;background:#ffffff12}.qr-install summary{cursor:pointer;font-weight:750}.qr-inner{margin-top:12px;text-align:center;background:#fff;color:#1b2d47;border-radius:12px;padding:14px}.qr-inner img{display:block;margin:0 auto;max-width:100%;height:auto;background:white;border-radius:8px}.qr-inner p{line-height:1.6}.qr-inner a{color:#1d4ed8;font-weight:750;overflow-wrap:anywhere}.qr-note{font-size:12px;color:#475569} .conversation-link{display:block;background:#dbeafe;color:#1e40af;text-decoration:none;border:1px solid #93c5fd;border-radius:14px;padding:15px;font-weight:800;text-align:center;margin:10px 0;line-height:1.5} </style></head><body><header><h1>English Master · 영어 마스터</h1><p>알파벳은 건너뛰고, 단어부터 실전 회화까지</p><div class="row" style="margin-top:14px"><button id="install">📲 홈 화면에 추가</button><button id="backup">진도 백업</button><button id="restore">진도 복원</button><input id="file" type="file" accept="application/json" hidden></div><p id="installHelp" class="muted" aria-live="polite"></p><details class="qr-install"><summary>📱 다른 기기에 설치 · QR코드 보기</summary><div class="qr-inner"><img src="https://api.qrserver.com/v1/create-qr-code/?size=240x240&amp;data=https%3A%2F%2Fhanjin-bbang.github.io%2Fenglish-master%2F" width="220" height="220" loading="lazy" alt="영어 마스터 앱 설치 주소 QR코드"><p>다른 휴대폰 카메라로 QR을 스캔하면 영어 마스터로 이동해요.</p><a href="https://hanjin-bbang.github.io/english-master/" target="_blank" rel="noopener">영어 마스터 직접 열기</a><p class="qr-note">삼성 인터넷: 메뉴(☰) → 현재 페이지 추가 → 홈 화면<br>Chrome: 메뉴(⋮) → 홈 화면에 추가 또는 설치</p><p class="qr-note">QR 이미지는 인터넷 연결이 필요합니다.</p></div></details></header><main><a class="conversation-link" href="./conversation.html">🗣️ 회화 집중 과정 시작 · 생활 / 여행 / 자유 대화 →</a><nav class="tabs" id="tabs"></nav><section class="card"><div class="row" style="justify-content:space-between"><span class="eyebrow" id="stage"></span><span class="eyebrow" id="count"></span></div><div class="progress" style="margin:14px 0"><div class="fill" id="bar"></div></div><div class="english" id="english"></div><div class="korean" id="korean"></div><div class="row"><button id="speak">🔊 발음 듣기</button><button id="slow">🐢 천천히</button><button id="toggle">뜻 숨기기</button></div><p class="muted" id="tip"></p></section><section class="card"><h3 id="exerciseTitle">✍️ 직접 써보기</h3><p class="muted" id="prompt"></p><div class="practice-target"><span class="eyebrow">영어로 바꿔 써보세요</span><strong id="practiceKorean"></strong></div><p class="muted" id="practiceHelp">위 한국어 뜻을 영어로 입력하세요. 어려우면 위 학습 카드에서 영어를 확인한 뒤 연습해도 돼요.</p><input id="answer" placeholder="영어로 입력해 보세요" autocomplete="off"><div class="row"><button id="check" class="primary">정답 확인</button><button id="reveal">정답 보기</button><button id="known">✓ 학습 완료</button></div><p id="result" aria-live="polite"></p></section><div class="row lesson-nav"><button id="prev">← 이전</button><button id="next" class="primary">다음 →</button></div><section class="card"><h3>이 단계의 학습 목록</h3><div id="list"></div></section></main><footer>영어 마스터 · 학습 진도는 이 브라우저에 저장됩니다.</footer><script src="./content.js"></script><script src="./app.js"></script><script>if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});</script></body></html>
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#172554">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="./icon.svg">
+<title>영어 마스터</title>
+<style>
+:root{--navy:#172554;--blue:#2563eb;--bg:#f3f6fb;--card:#fff;--ink:#1b2d47;--muted:#64748b;--line:#e2e8f0;--good:#15803d;--warn:#b45309;--me:#dbeafe;--you:#f1f5f9}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;-webkit-tap-highlight-color:transparent}
+header{background:var(--navy);color:#fff;padding:calc(14px + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) 14px max(16px,env(safe-area-inset-left,0px))}
+header .in{max-width:640px;margin:auto;display:flex;align-items:center;gap:12px}
+header img{width:36px;height:36px;border-radius:9px}
+header h1{margin:0;font-size:20px}
+main{max-width:640px;margin:auto;padding:14px max(16px,env(safe-area-inset-left,0px)) calc(28px + env(safe-area-inset-bottom,0px))}
+button{font:inherit;border:0;border-radius:14px;background:#e1e9f3;color:var(--navy);font-weight:700;padding:12px 14px;cursor:pointer}
+button:disabled{opacity:.5}
+.big{display:block;width:100%;padding:16px;font-size:18px;border-radius:16px}
+.primary{background:var(--blue);color:#fff}
+.ghost{background:#fff;box-shadow:inset 0 0 0 2px #cbd5e1}
+.warn{background:#fff7ed;color:var(--warn);box-shadow:inset 0 0 0 2px #fed7aa}
+.mic-btn{background:#fee2e2;color:#b91c1c}
+.muted{color:var(--muted);font-weight:400}.small{font-size:13px;line-height:1.6}
+section{background:var(--card);border-radius:20px;padding:18px;margin:12px 0;box-shadow:0 4px 18px #102f540d}
+.hero{position:relative}
+.hero h2{margin:0 0 10px;font-size:22px}
+.streak{position:absolute;right:16px;top:14px;text-align:center;line-height:1.1}
+.streak b{display:block;font-size:28px;color:var(--blue)}.streak span{font-size:12px;color:var(--muted)}
+.plan{list-style:none;margin:0 0 14px;padding:0;display:grid;gap:8px}
+.plan li{display:flex;align-items:center;gap:10px;font-size:17px}
+.plan i{font-style:normal;width:26px;height:26px;border-radius:50%;background:var(--navy);color:#fff;display:grid;place-items:center;font-size:14px;flex:none}
+.hero .big+.big{margin-top:10px}
+.chead{display:flex;justify-content:space-between;align-items:baseline}.chead h3{margin:0;font-size:19px}
+.course p{margin:4px 0 10px}
+.dlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.dl{display:flex;align-items:center;gap:8px;text-align:left;background:var(--you);font-weight:600;padding:12px}
+.dl .num{width:24px;height:24px;border-radius:50%;background:#fff;display:grid;place-items:center;font-size:13px;flex:none}
+.dl.ok{background:#dcfce7}.dl.ok .num{background:var(--good);color:#fff}
+.tools .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0}.tools .row>button{flex:1}
+.seg{display:flex;gap:6px;flex:1}.seg button{flex:1;padding:10px 6px;font-size:14px}.seg button[aria-pressed=true]{background:var(--navy);color:#fff}
+.ses{background:var(--card);border-radius:20px;padding:16px;box-shadow:0 4px 18px #102f540d;margin-top:12px}
+.stop{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.x{width:40px;height:40px;padding:0;border-radius:50%;flex:none}
+.steps{display:flex;gap:6px;align-items:center;font-size:14px;color:var(--muted);flex-wrap:wrap}
+.steps span.now{color:var(--blue);font-weight:800}.steps span.ok{color:var(--good)}.steps span.ok::before{content:'✓ '}.steps i{font-style:normal;opacity:.5}
+.stitle{font-size:20px;margin:6px 0 10px}
+.card{background:var(--bg);border-radius:16px;padding:18px;margin:10px 0}
+.ko{color:#475569;margin:6px 0;line-height:1.5}.en{font-weight:750;line-height:1.4;margin:6px 0}
+.big.ko,.ko.big{font-size:22px;color:var(--ink);font-weight:700}.en.big{font-size:clamp(22px,6vw,30px)}
+p.big{display:block;width:auto;padding:0}
+.hint{color:var(--muted);font-size:15px;margin:6px 0 10px;line-height:1.5}
+.answer{border-top:2px dashed #cbd5e1;margin-top:12px;padding-top:8px;cursor:pointer}
+.actions{display:flex;gap:10px;margin-top:10px}.actions .big{flex:1}
+.mic{min-height:24px;margin:8px 0;font-size:15px}.rec{color:#b91c1c}.good{color:var(--good);font-weight:800}.near{color:var(--warn);font-weight:800}.heard{color:var(--muted)}
+.talk{display:grid;gap:10px;max-height:52vh;overflow:auto;padding:4px 2px}
+.line{display:flex;gap:8px;align-items:flex-start;cursor:pointer}
+.line.me{flex-direction:row-reverse}
+.who{font-size:12px;color:var(--muted);flex:none;margin-top:10px;width:30px;text-align:center}
+.bub{background:var(--you);border-radius:16px;padding:10px 14px;max-width:85%;transition:box-shadow .2s}
+.me .bub{background:var(--me)}
+.bub .en{margin:0;font-size:18px}.bub .ko{margin:2px 0 0;font-size:14px}
+.line.playing .bub{box-shadow:0 0 0 3px var(--blue)}
+.blank{display:inline-block;color:var(--blue);background:#fff;border-radius:8px;padding:2px 10px;font-size:15px}
+.ex{display:grid;gap:8px;margin-top:12px}.exl{text-align:left;background:#fff;display:grid;gap:2px}.exl span{font-weight:400;color:var(--muted);font-size:14px}
+.done{text-align:center;padding:28px 18px}.done h2{margin:6px 0}.fire{font-size:54px;font-weight:900;color:var(--blue)}
+.ear .en{color:var(--blue)}
+</style>
+</head>
+<body>
+<header><div class="in"><img src="./icon.svg" alt=""><h1>영어 마스터</h1></div></header>
+<main id="app"></main>
+<script>window.APP_V='7'</script>
+<script src="./course-en.js"></script>
+<script src="./app.js"></script>
+<script>
+/* 새 버전 자동 반영: 열 때·다시 화면에 나올 때 version.json 확인 */
+(function(){
+  if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+  function check(){fetch('version.json?t='+Date.now(),{cache:'no-store'}).then(r=>r.json()).then(j=>{
+    if(!j||j.v===window.APP_V)return;const k='upd-'+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){}
+    (navigator.serviceWorker?navigator.serviceWorker.getRegistration().then(r=>r&&r.update()).catch(()=>{}):Promise.resolve()).then(()=>location.replace(location.pathname+'?v='+j.v));
+  }).catch(()=>{})}
+  addEventListener('load',check);document.addEventListener('visibilitychange',()=>{if(!document.hidden)check()});
+})();
+</script>
+</body>
+</html>
