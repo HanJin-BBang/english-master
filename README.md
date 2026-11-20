@@ -14,6 +14,6 @@
 
 ## 구조
 - `talk.js` 엔진 (영어·일본어 공용) / `course-en.js` 내용 / `sw.js` 네트워크 우선 캐시
-- 고칠 때: `index.html`의 `APP_V`, `version.json`, `sw.js`의 CACHE 숫자를 같이 올림
+- 고칠 때: `index.html`의 `APP_V`와 스크립트 주소 뒤 `?v=`, `version.json`, `sw.js`의 CACHE 숫자를 같이 올림
 
 GitHub Pages: Settings → Pages → Deploy from a branch → main / (root).
