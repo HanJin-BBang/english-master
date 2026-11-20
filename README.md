@@ -9,11 +9,11 @@
 
 - 🎧 듣기만 하기: 한국어 → 생각할 틈 → 영어 두 번 (출퇴근길용)
 - 🎤 말하기 확인: 브라우저 음성 인식으로 들린 문장이 맞는지 표시 (발음 점수 아님)
-- 코스: 여행 10개 대화 / 일상·비즈니스 준비 중
+- 코스: 여행 10 · 일상 8 · 영업 8 · 숙박 운영 8 (첫 화면에서 '이 코스로'를 누르면 그 코스부터)
 - 새 버전은 앱을 열 때 자동 반영 (version.json)
 
 ## 구조
-- `app.js` 엔진 (영어·일본어 공용) / `course-en.js` 내용 / `sw.js` 네트워크 우선 캐시
+- `talk.js` 엔진 (영어·일본어 공용) / `course-en.js` 내용 / `sw.js` 네트워크 우선 캐시
 - 고칠 때: `index.html`의 `APP_V`, `version.json`, `sw.js`의 CACHE 숫자를 같이 올림
 
 GitHub Pages: Settings → Pages → Deploy from a branch → main / (root).

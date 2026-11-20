@@ -9,6 +9,7 @@ try{Object.assign(S,JSON.parse(localStorage.getItem(KEY))||{})}catch(e){}
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
 const DIALOGS=C.courses.flatMap(c=>c.dialogs.map(d=>Object.assign(d,{course:c.id})));
 const lineOf=id=>{const[di,li]=id.split('#');const d=DIALOGS.find(x=>x.id===di);return d&&d.lines[+li]};
+const rdHTML=l=>l&&l[3]&&l[3].replace(/\s/g,'')!==l[1].replace(/\s/g,'')?`<p class="rd">${esc(l[3])}</p>`:'';
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
 /* ── 소리 ── */
@@ -30,7 +31,8 @@ function norm(s){
   return s.toLowerCase().replace(/[’`]/g,"'").split(/\s+/).map(w=>w.replace(/[^a-z0-9']/g,'')).filter(Boolean).map(w=>EXP[w]||w).join(' ').replace(/'/g,'');
 }
 function score(heard,target){
-  const a=norm(heard),b=norm(target);if(!a)return 0;
+  if(Array.isArray(target))return Math.max(...target.filter(Boolean).map(t=>score(heard,t)));
+  const a=norm(heard),b=norm(target);if(!a||!b)return 0;
   if(C.lang.startsWith('ja')){let m=0;const used=a.split('');for(const ch of b){const k=used.indexOf(ch);if(k>=0){m++;used.splice(k,1)}}return m/b.length}
   const hw=a.split(' '),tw=b.split(' ');let m=0;tw.forEach(w=>{const k=hw.indexOf(w);if(k>=0){m++;hw.splice(k,1)}});return m/tw.length;
 }
@@ -55,7 +57,8 @@ function micResult(res,out){
 function addCard(id){if(!S.cards[id])S.cards[id]={box:0,due:today()+1}}
 function dueCards(){const t=today();return Object.entries(S.cards).filter(([id,c])=>c.due<=t&&lineOf(id)).sort((a,b)=>a[1].due-b[1].due||a[1].box-b[1].box).slice(0,REVIEW_CAP).map(([id])=>id)}
 function grade(id,ok){const c=S.cards[id];if(ok){c.box=Math.min(GAPS.length-1,c.box+1);c.due=today()+GAPS[c.box-1>=0?c.box-1:0]}else{c.box=0;c.due=today()+1}save()}
-const nextDialog=()=>DIALOGS.find(d=>!S.done[d.id]);
+const focusCourse=()=>C.courses.find(c=>c.id===S.focus&&c.dialogs.length)||C.courses.find(c=>c.dialogs.length);
+const nextDialog=()=>{const f=focusCourse();return(f&&f.dialogs.find(d=>!S.done[d.id]))||DIALOGS.find(d=>!S.done[d.id])};
 function streak(){let n=0,t=today();if(!S.days[t])t--;while(S.days[t]){n++;t--}return n}
 
 /* ── 홈 ── */
@@ -67,15 +70,16 @@ function home(){
     <h2>${todayDone?'오늘 할 일 끝! 더 해도 좋아요':'오늘의 10분'}</h2>
     <ul class="plan">
       <li><i>1</i>복습 <b>${due}개</b>${due?'':' <span class="muted">(오늘은 없어요)</span>'}</li>
-      <li><i>2</i>새 대화 <b>${nd?esc(nd.title):'모두 끝!'}</b></li>
+      <li><i>2</i>새 대화 <b>${nd?esc(nd.title):'모두 끝!'}</b>${nd?` <span class="muted">· ${esc(C.courses.find(c=>c.id===nd.course).title)}</span>`:''}</li>
       <li><i>3</i>내 문장 만들기</li>
     </ul>
     <button class="big primary" id="go">${todayDone?'한 번 더 하기':'시작하기'}</button>
     <button class="big ghost" id="ear">🎧 듣기만 하기 <span class="muted">· 화면 안 보고 들어요</span></button>
   </section>
   ${C.courses.map(c=>{const n=c.dialogs.filter(d=>S.done[d.id]).length;return `
-  <section class="course"><div class="chead"><h3>${c.title}</h3><span class="muted">${c.soon?'준비 중':n+' / '+c.dialogs.length}</span></div><p class="muted">${c.desc}</p>
+  <section class="course ${focusCourse()===c?'focus':''}"><div class="chead"><h3>${c.title}</h3><span class="muted">${c.soon?'준비 중':n+' / '+c.dialogs.length}</span>${c.soon||focusCourse()===c?'':`<button class="pick" data-c="${c.id}">이 코스로</button>`}${focusCourse()===c?'<span class="badge">지금 코스</span>':''}</div><p class="muted">${c.desc}</p>
     ${c.soon?'':`<div class="dlist">${c.dialogs.map((d,i)=>`<button class="dl ${S.done[d.id]?'ok':''}" data-d="${d.id}"><span class="num">${S.done[d.id]?'✓':i+1}</span>${esc(d.title)}</button>`).join('')}</div>`}</section>`}).join('')}
+  ${(C.links||[]).map(l=>`<a class="linkcard" href="${l.href}"><b>${esc(l.label)}</b><span class="muted">${esc(l.desc||'')}</span></a>`).join('')}
   <section class="tools">
     <div class="row"><span>말하는 속도</span><div class="seg" id="rate">${[[.75,'느리게'],[.9,'조금 느리게'],[1,'보통']].map(([v,l])=>`<button data-r="${v}" aria-pressed="${S.rate==v}">${l}</button>`).join('')}</div></div>
     <div class="row"><button id="backup">진도 저장하기</button><button id="restore">진도 불러오기</button><button id="install">홈 화면에 설치</button></div>
@@ -84,6 +88,7 @@ function home(){
   </section>`;
   $('go').onclick=()=>startSession();
   $('ear').onclick=()=>listenOnly();
+  document.querySelectorAll('.pick').forEach(b=>b.onclick=()=>{S.focus=b.dataset.c;save();home()});
   document.querySelectorAll('.dl').forEach(b=>b.onclick=()=>startSession(b.dataset.d));
   document.querySelectorAll('#rate button').forEach(b=>b.onclick=()=>{S.rate=+b.dataset.r;save();home();say(C.lang.startsWith('ja')?'こんにちは':'Hello!')});
   $('backup').onclick=()=>{const blob=new Blob([JSON.stringify(S)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=KEY+'-progress.json';a.click();$('toolMsg').textContent='진도 파일을 내려받았어요.'};
@@ -111,21 +116,21 @@ function reviewCard(){
   if(!ses)return;
   if(!ses.queue.length&&ses.again.length){ses.queue=ses.again;ses.again=[]}
   if(!ses.queue.length){if(ses.dlg)return dialogListen();return finish()}
-  const id=ses.queue[0],[,en,ko]=lineOf(id),left=ses.queue.length+ses.again.length;
+  const id=ses.queue[0],L0=lineOf(id),[,en,ko]=L0,left=ses.queue.length+ses.again.length;
   frame(0,`복습 <span class="muted">· 남은 ${left}개</span>`,`
     <div class="card"><p class="ko big">${esc(ko)}</p><p class="hint">${C.langName}로 소리 내서 말해 보세요</p>
-      <div class="answer" id="ans" hidden><p class="en">${esc(en)}</p></div><div class="mic" id="micOut"></div></div>
+      <div class="answer" id="ans" hidden><p class="en">${esc(en)}</p>${rdHTML(L0)}</div><div class="mic" id="micOut"></div></div>
     <div class="actions">${SR?'<button class="big mic-btn" id="mic">🎤 말하기</button>':''}<button class="big ${SR?'ghost':'primary'}" id="show">정답 보기</button></div>
     <div class="actions" id="grade" hidden><button class="big warn" id="hard">헷갈렸어요</button><button class="big primary" id="easy">말했어요</button></div>`);
   const show=()=>{$('ans').hidden=false;$('grade').hidden=false;$('show').hidden=true;say(en)};
   $('show').onclick=show;
-  if(SR)$('mic').onclick=async()=>{$('mic').disabled=true;const r=await listen(en,$('micOut'));$('mic').disabled=false;micResult(r,$('micOut'));show()};
+  if(SR)$('mic').onclick=async()=>{$('mic').disabled=true;const r=await listen([en,L0[3]],$('micOut'));$('mic').disabled=false;micResult(r,$('micOut'));show()};
   $('ans').onclick=()=>say(en);
   $('easy').onclick=()=>{grade(id,true);ses.queue.shift();ses.reviewed++;reviewCard()};
   $('hard').onclick=()=>{grade(id,false);ses.queue.shift();ses.again.push(id);ses.reviewed++;reviewCard()};
 }
 function lineHTML(l,i,mode){const me=l[0]==='B';
-  return `<div class="line ${me?'me':'you'}" data-i="${i}"><span class="who">${me?'나':'상대'}</span><div class="bub"><p class="en">${mode==='hideMe'&&me?'<span class="blank">내 차례</span>':esc(l[1])}</p><p class="ko">${esc(l[2])}</p></div></div>`}
+  return `<div class="line ${me?'me':'you'}" data-i="${i}"><span class="who">${me?'나':'상대'}</span><div class="bub"><p class="en">${mode==='hideMe'&&me?'<span class="blank">내 차례</span>':esc(l[1])}</p>${mode==='hideMe'&&me?'':rdHTML(l)}<p class="ko">${esc(l[2])}</p></div></div>`}
 async function playLines(d,from=0,stopAt){
   const tok=ses.tok=Symbol();for(let i=from;i<(stopAt??d.lines.length);i++){if(!ses||ses.tok!==tok)return;
     document.querySelectorAll('.line').forEach(e=>e.classList.toggle('playing',+e.dataset.i===i));
@@ -145,7 +150,7 @@ function dialogShadow(i){
   const d=ses.dlg,l=d.lines[i];
   frame(1,`${esc(d.title)} <span class="muted">· ② 따라 말하기 ${i+1}/${d.lines.length}</span>`,`
     <p class="hint">듣고 바로 따라 말해요. 뜻을 생각하며 소리 내면 더 잘 남아요.</p>
-    <div class="card shadow"><p class="en big">${esc(l[1])}</p><p class="ko">${esc(l[2])}</p></div>
+    <div class="card shadow"><p class="en big">${esc(l[1])}</p>${rdHTML(l)}<p class="ko">${esc(l[2])}</p></div>
     <div class="actions"><button class="big ghost" id="rep">▶ 다시 듣기</button><button class="big ghost" id="slow">🐢 느리게</button></div>
     <div class="actions"><button class="big primary" id="next">${i<d.lines.length-1?'따라 했어요 → 다음':'따라 했어요 → 역할 말하기'}</button></div>`);
   $('rep').onclick=()=>{hush();say(l[1])};$('slow').onclick=()=>{hush();say(l[1],{rate:.65})};
@@ -162,10 +167,10 @@ async function dialogRole(i){
   if(l[0]==='A'){act.innerHTML='<button class="big ghost" id="rep">▶ 다시 듣기</button><button class="big primary" id="next">다음</button>';$('rep').onclick=()=>say(l[1]);$('next').onclick=()=>{hush();dialogRole(i+1)};
     await say(l[1],{pitch:.92});if(S.auto&&d.lines[i+1]&&ses&&ses.roleI===i)dialogRole(i+1);return}
   act.innerHTML=`${SR?'<button class="big mic-btn" id="mic">🎤 말하기</button>':''}<button class="big ${SR?'ghost':'primary'}" id="show">정답 보기</button>`;
-  const reveal=()=>{const p=document.querySelector('.talk').lastElementChild.querySelector('.en');p.textContent=l[1];
+  const reveal=()=>{const p=document.querySelector('.talk').lastElementChild.querySelector('.en');p.textContent=l[1];if(l[3])p.insertAdjacentHTML('afterend',rdHTML(l));
     act.innerHTML='<button class="big ghost" id="rep">▶ 다시 듣기</button><button class="big primary" id="next">다음</button>';$('rep').onclick=()=>say(l[1]);$('next').onclick=()=>{hush();dialogRole(i+1)};say(l[1])};
   $('show').onclick=reveal;
-  if(SR)$('mic').onclick=async()=>{$('mic').disabled=true;const r=await listen(l[1],$('micOut'));micResult(r,$('micOut'));reveal()};
+  if(SR)$('mic').onclick=async()=>{$('mic').disabled=true;const r=await listen([l[1],l[3]],$('micOut'));micResult(r,$('micOut'));reveal()};
 }
 function dialogDone(){
   const d=ses.dlg;S.done[d.id]=true;d.lines.forEach((l,i)=>{if(l[0]==='B')addCard(d.id+'#'+i)});save();
@@ -174,8 +179,8 @@ function dialogDone(){
 function dialogPattern(){
   const d=ses.dlg,p=d.pattern;if(!p)return finish();
   frame(2,`내 문장 만들기`,`
-    <div class="card"><p class="muted">오늘의 문장 틀</p><p class="en big">${esc(p.frame)}</p><p class="ko">${esc(p.ko)}</p>
-      <div class="ex">${p.ex.map(([e,k])=>`<button class="exl" data-t="${esc(e)}"><b>${esc(e)}</b><span>${esc(k)}</span></button>`).join('')}</div></div>
+    <div class="card"><p class="muted">오늘의 문장 틀</p><p class="en big">${esc(p.frame)}</p>${p.rd&&p.rd!==p.frame?`<p class="rd">${esc(p.rd)}</p>`:''}<p class="ko">${esc(p.ko)}</p>
+      <div class="ex">${p.ex.map(([e,k,r])=>`<button class="exl" data-t="${esc(e)}"><b>${esc(e)}</b>${r&&r.replace(/\s/g,'')!==e.replace(/\s/g,'')?`<span class="rd">${esc(r)}</span>`:''}<span>${esc(k)}</span></button>`).join('')}</div></div>
     <p class="hint">빈칸에 <b>내 이야기</b>를 넣어서 두세 번 소리 내 말해 보세요. 정답은 없어요.</p>
     <div class="mic" id="micOut"></div>
     <div class="actions">${SR?'<button class="big mic-btn" id="mic">🎤 말해 보기</button>':''}<button class="big primary" id="next">말해 봤어요</button></div>`);
@@ -208,7 +213,7 @@ async function listenOnly(){
   for(let k=0;k<items.length;k++){if(me.stop)return;const[,en,ko]=items[k];
     $('eN').textContent=`${k+1} / ${items.length}`;$('eK').textContent=ko;$('eE').textContent='';
     await say(ko,{lang:'ko-KR',rate:1});if(me.stop)return;await wait(2600);if(me.stop)return;
-    $('eE').textContent=en;await say(en);await wait(700);if(me.stop)return;await say(en);await wait(1200)}
+    $('eE').textContent=en+(items[k][3]?'\n'+items[k][3]:'');await say(en);await wait(700);if(me.stop)return;await say(en);await wait(1200)}
   if(!me.stop){S.days[today()]=1;save();$('eK').textContent='다 들었어요!';$('eE').textContent='';$('eN').textContent=''}
 }
 
